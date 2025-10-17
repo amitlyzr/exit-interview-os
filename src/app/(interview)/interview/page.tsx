@@ -22,7 +22,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-const agentId = "68ece7bf0e07afd8b00318fd";
+const agentId = process.env.LYZR_QUESTIONINAIRE_AGENT_ID!;
 
 function InterviewPageContent() {
   const router = useRouter();
