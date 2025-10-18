@@ -1,45 +1,127 @@
-# Exit Interview Application
+<div align="center">
+  <h1>🎯 Exit Interview OS</h1>
+  <p><strong>AI-Powered Exit Interview Platform for Modern Organizations</strong></p>
+  
+  <p>
+    <a href="#-features">Features</a> •
+    <a href="#-quick-start">Quick Start</a> •
+    <a href="#-documentation">Documentation</a> •
+    <a href="#-contributing">Contributing</a> •
+    <a href="#-license">License</a>
+  </p>
 
-An AI-powered exit interview platform that enables organizations to conduct structured, confidential exit interviews with departing employees. The application features Gmail OAuth integration for seamless email delivery, customizable templates, and comprehensive analytics.
+  <p>
+    <img src="https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=next.js" alt="Next.js" />
+    <img src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react" alt="React" />
+    <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript" alt="TypeScript" />
+    <img src="https://img.shields.io/badge/MongoDB-6-47A248?style=flat-square&logo=mongodb" alt="MongoDB" />
+    <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License" />
+  </p>
+</div>
 
-## 🚀 Features
+---
 
-- **AI-Powered Interviews**: Intelligent conversation flow with natural language processing
-- **Gmail OAuth Integration**: Send invitations directly from user's Gmail account
-- **Customizable Email Templates**: HTML and text email templates with variable substitution
-- **Multi-Channel Email Delivery**: Gmail API, SMTP fallback, and manual sending options
-- **Real-time Analytics**: Sentiment analysis and interview insights
-- **User-Based Data Isolation**: Secure multi-tenant architecture
-- **Responsive Design**: Modern UI built with Next.js and Tailwind CSS
+## 📖 Overview
+
+**Exit Interview OS** is an open-source, AI-powered platform that transforms the traditional exit interview process. Organizations can conduct structured, confidential exit interviews with departing employees, gaining actionable insights to improve retention and workplace culture.
+
+### Why Exit Interview OS?
+
+- 🤖 **AI-Driven Conversations** - Natural, adaptive interview flow powered by Lyzr AI
+- 📧 **Multi-Channel Email Delivery** - Gmail OAuth, SMTP fallback, and manual options
+- 🎨 **Customizable Templates** - Brand your interview invitations
+- 📊 **Real-Time Analytics** - Sentiment analysis and comprehensive insights
+- 🔒 **Enterprise-Grade Security** - Multi-tenant architecture with complete data isolation
+- ⚡ **Modern Stack** - Built on Next.js 15, React 19, and TypeScript
+
+---
+
+## ✨ Features
+
+<table>
+  <tr>
+    <td width="50%">
+      <h3>🤖 AI-Powered Interviews</h3>
+      <p>Intelligent conversation flow that adapts to employee responses using natural language processing and contextual awareness.</p>
+    </td>
+    <td width="50%">
+      <h3>📧 Smart Email Delivery</h3>
+      <p>Multiple delivery channels with automatic fallback: Gmail OAuth → SMTP → Manual distribution.</p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <h3>📊 Comprehensive Analytics</h3>
+      <p>Real-time sentiment analysis, theme extraction, and actionable insights to drive organizational improvements.</p>
+    </td>
+    <td width="50%">
+      <h3>🎨 Customizable Templates</h3>
+      <p>HTML and text email templates with variable substitution for personalized communications.</p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <h3>🔒 Secure & Isolated</h3>
+      <p>Enterprise-grade multi-tenant architecture ensuring complete data privacy and isolation.</p>
+    </td>
+    <td width="50%">
+      <h3>⚡ Modern Tech Stack</h3>
+      <p>Built with Next.js 15, React 19, TypeScript, MongoDB, and Tailwind CSS for maximum performance.</p>
+    </td>
+  </tr>
+</table>
+
+---
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: Next.js 15, React 19, TypeScript
-- **Backend**: Next.js API Routes, Node.js
-- **Database**: MongoDB with Mongoose ODM
-- **Authentication**: Cookie-based session management
-- **Email Services**: Gmail API, Nodemailer (SMTP)
-- **UI Components**: Radix UI, Tailwind CSS, Lucide Icons
-- **AI Integration**: Lyzr Agent SDK
+<div align="center">
 
-## 📋 Prerequisites
+| Category | Technologies |
+|----------|-------------|
+| **Frontend** | Next.js 15, React 19, TypeScript |
+| **Backend** | Next.js API Routes, Node.js |
+| **Database** | MongoDB + Mongoose ODM |
+| **AI/ML** | Lyzr Agent SDK |
+| **Email** | Gmail API, Nodemailer (SMTP) |
+| **UI** | Radix UI, Tailwind CSS, Lucide Icons |
+| **State** | Redux Toolkit, React Context |
 
-- Node.js 18+ and npm/yarn/pnpm
-- MongoDB database (local or cloud)
-- Google Cloud Console account (for Gmail OAuth)
-- Lyzr API credentials
+</div>
 
-## ⚡ Quick Start
+---
 
-### 1. Clone and Install
+## � Quick Start
+
+### Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- **Node.js** 18+ and npm/yarn/pnpm
+- **MongoDB** (local or cloud instance)
+- **Google Cloud Console** account (for Gmail OAuth)
+- **Lyzr API** credentials
+
+### Installation
+
+#### 1️⃣ Clone the Repository
 
 ```bash
-git clone <repository-url>
-cd exit-interview-app
-npm install
+git clone https://github.com/amitlyzr/exit-interview-os.git
+cd exit-interview-os
 ```
 
-### 2. Environment Configuration
+#### 2️⃣ Install Dependencies
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+#### 3️⃣ Environment Configuration
 
 Create a `.env.local` file in the root directory:
 
@@ -61,68 +143,78 @@ LYZR_FEEDBACK_AGENT_ID=""
 LYZR_SUGGESTIONS_AGENT_ID=""
 ```
 
-### 3. Gmail OAuth Setup
-
-#### Google Cloud Console Configuration
-
-1. **Create Google Cloud Project**
-   - Go to [Google Cloud Console](https://console.cloud.google.com/)
-   - Create a new project or select existing one
-   - Enable the Gmail API
-
-2. **Create OAuth 2.0 Credentials**
-   - Navigate to **APIs & Services** → **Credentials**
-   - Click **Create Credentials** → **OAuth client ID**
-   - Choose **Web application**
-
-3. **Configure OAuth Consent Screen**
-   - Add application name and authorized domains
-   - Add scopes: 
-     - `https://www.googleapis.com/auth/gmail.send`
-     - `https://www.googleapis.com/auth/userinfo.email`
-
-4. **Set Authorized Redirect URIs**
-   - Development: `http://localhost:3000/api/auth/gmail/callback`
-   - Production: `https://yourdomain.com/api/auth/gmail/callback`
-
-5. **Get Credentials**
-   - Copy Client ID and Client Secret to your `.env.local`
-
-### 4. Run Development Server
+#### 4️⃣ Run Development Server
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to access the application.
+Open [http://localhost:3000](http://localhost:3000) in your browser. 🎉
+
+---
 
 ## 📧 Email Configuration
 
-The application supports multiple email delivery methods with automatic fallback:
-
-### Priority Order
-1. **Gmail API** (Preferred) - Uses connected Gmail account
-2. **SMTP Fallback** - Uses configured SMTP settings
-3. **Manual Sending** - Returns interview URL for manual distribution
-
-### Gmail Connection Flow
-1. Navigate to Settings → Gmail Connection
-2. Click "Connect Gmail" button
-3. Complete Google OAuth consent
-4. Gmail account is now connected for sending
-
-### SMTP Configuration (Optional)
-Configure SMTP settings in the application settings as a fallback option:
+The application supports **multiple email delivery methods** with automatic fallback:
 
 ```
-Host: smtp.gmail.com
-Port: 587
-Security: STARTTLS
-Username: your-email@gmail.com
-Password: your-app-password
+Gmail OAuth (Primary) → SMTP (Fallback) → Manual Link (Last Resort)
 ```
 
-## 🏗️ Project Structure
+### Gmail OAuth Setup
+
+<details>
+<summary><b>🔧 Google Cloud Console Setup (Click to expand)</b></summary>
+
+<br/>
+
+**Step 1: Create Google Cloud Project**
+- Visit [Google Cloud Console](https://console.cloud.google.com/)
+- Create a new project or select an existing one
+- Enable the Gmail API
+
+**Step 2: Create OAuth 2.0 Credentials**
+- Navigate to **APIs & Services** → **Credentials**
+- Click **Create Credentials** → **OAuth client ID**
+- Choose **Web application**
+
+**Step 3: Configure OAuth Consent Screen**
+- Add application name and authorized domains
+- Add scopes:
+  - `https://www.googleapis.com/auth/gmail.send`
+  - `https://www.googleapis.com/auth/userinfo.email`
+
+**Step 4: Set Authorized Redirect URIs**
+- Development: `http://localhost:3000/api/auth/gmail/callback`
+- Production: `https://yourdomain.com/api/auth/gmail/callback`
+
+**Step 5: Get Credentials**
+- Copy Client ID and Client Secret to your `.env.local`
+
+</details>
+
+### In-App Gmail Connection
+
+1. Navigate to **Settings → Gmail Connection**
+2. Click **"Connect Gmail"** button
+3. Complete Google OAuth consent flow
+4. Start sending invitations! ✉️
+
+### SMTP Configuration (Optional Fallback)
+
+Configure SMTP in application settings:
+
+| Setting | Value |
+|---------|-------|
+| **Host** | smtp.gmail.com |
+| **Port** | 587 |
+| **Security** | STARTTLS |
+| **Username** | your-email@gmail.com |
+| **Password** | your-app-password |
+
+---
+
+## 📁 Project Structure
 
 ```
 src/
@@ -150,41 +242,75 @@ src/
 └── hooks/                       # Custom React hooks
 ```
 
-## 🔧 API Endpoints
+---
 
-### Gmail OAuth
-- `POST /api/auth/gmail/connect` - Initiate Gmail connection
-- `GET /api/auth/gmail/callback` - OAuth callback handler
-- `GET /api/auth/gmail/status` - Check connection status
-- `DELETE /api/auth/gmail/status` - Disconnect Gmail
-- `POST /api/auth/gmail/test` - Send test email
+## � API Reference
 
-### Email Management
-- `GET /api/email-template` - Get email template
-- `POST /api/email-template` - Save email template
-- `DELETE /api/email-template` - Reset to default template
+<details>
+<summary><b>View All API Endpoints</b></summary>
 
-### Interview Management
-- `GET /api/sessions` - List interview sessions
-- `POST /api/sessions` - Create new session
-- `POST /api/send-invitation` - Send interview invitation
+<br/>
 
-### Analytics
-- `GET /api/analytics` - Get interview analytics
-- `GET /api/sentiment` - Get sentiment analysis
+### 🔐 Gmail OAuth
+```
+POST   /api/auth/gmail/connect    - Initiate Gmail connection
+GET    /api/auth/gmail/callback   - OAuth callback handler
+GET    /api/auth/gmail/status     - Check connection status
+DELETE /api/auth/gmail/status     - Disconnect Gmail
+POST   /api/auth/gmail/test       - Send test email
+```
+
+### 📧 Email Management
+```
+GET    /api/email-template        - Get email template
+POST   /api/email-template        - Save email template
+DELETE /api/email-template        - Reset to default template
+```
+
+### 📝 Interview Management
+```
+GET    /api/sessions              - List interview sessions
+POST   /api/sessions              - Create new session
+POST   /api/send-invitation       - Send interview invitation
+GET    /api/sessions/:id          - Get session details
+PATCH  /api/sessions/:id          - Update session
+DELETE /api/sessions/:id          - Delete session
+```
+
+### 💬 Messages & Feedback
+```
+GET    /api/messages              - Get conversation messages
+POST   /api/messages              - Store new message
+POST   /api/feedback              - Generate AI feedback
+```
+
+### 📊 Analytics & Insights
+```
+GET    /api/analytics             - Get interview analytics
+GET    /api/sentiment             - Get sentiment analysis
+POST   /api/suggestions           - Get improvement suggestions
+```
+
+</details>
+
+---
 
 ## 🎨 Email Templates
 
-### Template Variables
-Use these variables in your email templates:
+Customize your interview invitation emails with **dynamic variables**:
 
-- `{{name}}` - Employee name
-- `{{role}}` - Employee role
-- `{{level}}` - Interview level (junior, mid-level, senior)
-- `{{tenure}}` - Employment tenure in months
-- `{{interviewUrl}}` - Interview participation link
+| Variable | Description |
+|----------|-------------|
+| `{{name}}` | Employee's full name |
+| `{{role}}` | Job role/title |
+| `{{level}}` | Seniority level (junior/mid/senior) |
+| `{{tenure}}` | Employment duration in months |
+| `{{interviewUrl}}` | Unique interview link |
 
-### HTML Template Example
+<details>
+<summary><b>📄 HTML Template Example</b></summary>
+
+<br/>
 ```html
 <!DOCTYPE html>
 <html>
@@ -208,119 +334,192 @@ Use these variables in your email templates:
 </html>
 ```
 
-## 🔒 Security Features
+</details>
 
-- **OAuth 2.0 Authentication**: Secure Gmail integration without password storage
-- **User-Based Data Isolation**: Multi-tenant architecture with user-specific data
-- **Token Management**: Automatic refresh and secure storage of OAuth tokens
-- **Input Validation**: Comprehensive validation using Zod schemas
-- **CORS Protection**: Configured for secure cross-origin requests
+---
+
+## 🔒 Security & Privacy
+
+<table>
+  <tr>
+    <td>🔐 <b>OAuth 2.0</b></td>
+    <td>Secure Gmail integration without password storage</td>
+  </tr>
+  <tr>
+    <td>🏢 <b>Multi-Tenant</b></td>
+    <td>Complete data isolation per organization</td>
+  </tr>
+  <tr>
+    <td>🔄 <b>Token Management</b></td>
+    <td>Automatic refresh and secure token storage</td>
+  </tr>
+  <tr>
+    <td>✅ <b>Input Validation</b></td>
+    <td>Comprehensive validation with Zod schemas</td>
+  </tr>
+  <tr>
+    <td>🛡️ <b>CORS Protection</b></td>
+    <td>Secure cross-origin request handling</td>
+  </tr>
+</table>
+
+---
 
 ## 📊 Analytics & Insights
 
-The application provides comprehensive analytics including:
+Transform exit interview data into **actionable insights**:
 
-- **Interview Completion Rates**: Track participation metrics
-- **Sentiment Analysis**: AI-powered sentiment scoring of responses
-- **Response Patterns**: Identify common themes and feedback
-- **Department Insights**: Analytics segmented by role and level
-- **Trend Analysis**: Historical data and patterns
+- 📈 **Completion Rates** - Track interview participation metrics
+- 😊 **Sentiment Analysis** - AI-powered emotional tone analysis
+- 🎯 **Pattern Recognition** - Identify common themes and concerns
+- 👥 **Role-Based Insights** - Analytics segmented by department and level
+- 📉 **Trend Analysis** - Historical data and retention patterns
+- 💡 **AI Recommendations** - Actionable suggestions for improvement
+
+---
 
 ## 🚀 Deployment
 
-### Environment Variables for Production
+### Deploy to Vercel
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/amitlyzr/exit-interview-os)
+
+### Manual Deployment
 
 ```bash
-# Database
-MONGODB_URI=mongodb://localhost:27017/exit-interview
-
-# Application
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-
-# Gmail OAuth (Required for email sending)
-GOOGLE_CLIENT_ID=your_google_client_id_here
-GOOGLE_CLIENT_SECRET=your_google_client_secret_here
-
-# Lyzr AI Integration
-LYZR_API_KEY=your_lyzr_api_key_here
-LYZR_SENTIMENT_AGENT_ID=""
-LYZR_FEEDBACK_AGENT_ID=""
-LYZR_SUGGESTIONS_AGENT_ID=""
-```
-
-### Build and Deploy
-
-```bash
-# Build the application
+# Build for production
 npm run build
 
 # Start production server
 npm start
 ```
 
-### Vercel Deployment
+### Environment Variables
 
-The application is optimized for Vercel deployment:
+Set these in your deployment platform:
 
-1. Connect your GitHub repository to Vercel
-2. Configure environment variables in Vercel dashboard
-3. Deploy automatically on push to main branch
+```env
+MONGODB_URI=your_mongodb_connection_string
+NEXT_PUBLIC_APP_URL=https://yourdomain.com
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+LYZR_API_KEY=your_lyzr_api_key
+```
 
-## 🔧 Troubleshooting
+### Deployment Platforms
 
-### Common Issues
+| Platform | Status | Documentation |
+|----------|--------|---------------|
+| **Vercel** | ✅ Recommended | Optimized for Next.js |
+| **Docker** | ✅ Supported | Dockerfile included |
+| **AWS** | ✅ Supported | EC2, ECS, or Lambda |
+| **Google Cloud** | ✅ Supported | Cloud Run or App Engine |
+| **Azure** | ✅ Supported | App Service |
 
-**Gmail OAuth Not Working**
-- Verify environment variables are set correctly
-- Check Google Cloud Console OAuth configuration
-- Ensure redirect URIs match exactly
+---
 
-**Email Sending Failures**
-- Check Gmail API quotas in Google Cloud Console
-- Verify user has granted necessary permissions
-- Test with SMTP fallback configuration
+## � Troubleshooting
 
-**Database Connection Issues**
-- Verify MongoDB URI format and credentials
-- Check network connectivity to MongoDB instance
-- Ensure database user has proper permissions
+<details>
+<summary><b>🔍 Common Issues & Solutions</b></summary>
 
-**Build Errors**
-- Clear `.next` folder and `node_modules`
-- Run `npm install` to reinstall dependencies
-- Check TypeScript errors with `npm run lint`
+<br/>
+
+### Gmail OAuth Not Working
+- ✅ Verify environment variables are set correctly
+- ✅ Check Google Cloud Console OAuth configuration
+- ✅ Ensure redirect URIs match exactly (dev vs production)
+
+### Email Sending Failures
+- ✅ Check Gmail API quotas in Google Cloud Console
+- ✅ Verify user has granted necessary permissions
+- ✅ Test with SMTP fallback configuration
+
+### Database Connection Issues
+- ✅ Verify MongoDB URI format and credentials
+- ✅ Check network connectivity to MongoDB instance
+- ✅ Ensure database user has proper permissions
+
+### Build Errors
+- ✅ Clear `.next` folder: `rm -rf .next`
+- ✅ Clear `node_modules`: `rm -rf node_modules`
+- ✅ Reinstall dependencies: `npm install`
+- ✅ Check TypeScript errors: `npm run lint`
 
 ### Gmail API Quotas
-
-- **Free Tier**: 1 billion quota units per day
+- **Free Tier**: 1 billion quota units/day
 - **Email Sending**: ~25 quota units per email
-- **Monitor Usage**: Google Cloud Console → APIs & Services → Quotas
+- **Monitor**: Google Cloud Console → APIs & Services → Quotas
+
+</details>
+
+---
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+We love contributions! Exit Interview OS is **open-source** and welcomes improvements from the community.
 
-## 📄 License
+### How to Contribute
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+1. **Fork** the repository
+2. **Create** a feature branch
+   ```bash
+   git checkout -b feature/amazing-feature
+   ```
+3. **Commit** your changes
+   ```bash
+   git commit -m 'Add amazing feature'
+   ```
+4. **Push** to the branch
+   ```bash
+   git push origin feature/amazing-feature
+   ```
+5. **Open** a Pull Request
 
-## 🆘 Support
+### Development Guidelines
 
-For support and questions:
+- � Follow TypeScript best practices
+- ✅ Write tests for new features
+- 📖 Update documentation
+- 🎨 Follow existing code style
+- 💬 Write clear commit messages
 
-1. Check the troubleshooting section above
-2. Review the [Gmail OAuth Setup Guide](./GMAIL_OAUTH_SETUP.md)
-3. Open an issue on GitHub
-4. Contact the development team
+---
 
-## 🔄 Version History
+## �📄 License
 
-- **v0.1.0** - Initial release with core functionality
-- Gmail OAuth integration
-- Email template management
-- Basic analytics dashboard
-- User-based data isolation
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## � Support & Community
+
+<div align="center">
+
+### Show Your Support
+
+If you find this project useful, please consider:
+
+⭐ **Star this repository**  
+🐛 **Report bugs**  
+💡 **Suggest new features**  
+🤝 **Contribute code**
+
+### Get Help
+
+- 📚 [Documentation](./ARCHITECTURE.md)
+- 💬 [GitHub Discussions](https://github.com/amitlyzr/exit-interview-os/discussions)
+- 🐛 [Issue Tracker](https://github.com/amitlyzr/exit-interview-os/issues)
+- 📧 [Email Support](mailto:support@lyzr.ai)
+
+---
+
+<p>Built with ❤️ by <a href="https://lyzr.ai">Lyzr</a></p>
+
+<p>
+  <a href="https://twitter.com/lyzrai">Twitter</a> •
+  <a href="https://github.com/amitlyzr">GitHub</a> •
+  <a href="https://lyzr.ai">Website</a>
+</p>
+
+</div>
