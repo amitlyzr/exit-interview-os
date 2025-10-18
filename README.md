@@ -136,6 +136,7 @@ GOOGLE_CLIENT_SECRET=your_google_client_secret_here
 
 # Lyzr AI Integration
 LYZR_API_KEY=your_lyzr_api_key_here
+LYZR_QUESTIONINAIRE_AGENT_ID=""
 LYZR_SENTIMENT_AGENT_ID=""
 LYZR_FEEDBACK_AGENT_ID=""
 LYZR_SUGGESTIONS_AGENT_ID=""
@@ -390,18 +391,6 @@ npm run build
 
 # Start production server
 npm start
-```
-
-### Environment Variables
-
-Set these in your deployment platform:
-
-```env
-MONGODB_URI=your_mongodb_connection_string
-NEXT_PUBLIC_APP_URL=https://yourdomain.com
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-LYZR_API_KEY=your_lyzr_api_key
 ```
 
 ### Deployment Platforms
