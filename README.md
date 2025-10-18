@@ -1,11 +1,9 @@
 <div align="center">
-  <h1>🎯 Exit Interview OS</h1>
+  <h1>🎯 Exit Interview - Lyzr AI</h1>
   <p><strong>AI-Powered Exit Interview Platform for Modern Organizations</strong></p>
   
   <p>
     <a href="#-features">Features</a> •
-    <a href="#-quick-start">Quick Start</a> •
-    <a href="#-documentation">Documentation</a> •
     <a href="#-contributing">Contributing</a> •
     <a href="#-license">License</a>
   </p>
@@ -23,9 +21,9 @@
 
 ## 📖 Overview
 
-**Exit Interview OS** is an open-source, AI-powered platform that transforms the traditional exit interview process. Organizations can conduct structured, confidential exit interviews with departing employees, gaining actionable insights to improve retention and workplace culture.
+**Exit Interview - Lyzr AI** is an open-source, AI-powered platform that transforms the traditional exit interview process. Organizations can conduct structured, confidential exit interviews with departing employees, gaining actionable insights to improve retention and workplace culture.
 
-### Why Exit Interview OS?
+### Why Exit Interview - Lyzr AI?
 
 - 🤖 **AI-Driven Conversations** - Natural, adaptive interview flow powered by Lyzr AI
 - 📧 **Multi-Channel Email Delivery** - Gmail OAuth, SMTP fallback, and manual options
@@ -91,7 +89,7 @@
 
 ---
 
-## � Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -244,7 +242,7 @@ src/
 
 ---
 
-## � API Reference
+## API Reference
 
 <details>
 <summary><b>View All API Endpoints</b></summary>
@@ -418,7 +416,7 @@ LYZR_API_KEY=your_lyzr_api_key
 
 ---
 
-## � Troubleshooting
+## Troubleshooting
 
 <details>
 <summary><b>🔍 Common Issues & Solutions</b></summary>
@@ -478,7 +476,7 @@ We love contributions! Exit Interview OS is **open-source** and welcomes improve
 
 ### Development Guidelines
 
-- � Follow TypeScript best practices
+- Follow TypeScript best practices
 - ✅ Write tests for new features
 - 📖 Update documentation
 - 🎨 Follow existing code style
@@ -486,24 +484,11 @@ We love contributions! Exit Interview OS is **open-source** and welcomes improve
 
 ---
 
-## �📄 License
+## 📄 License
 
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
 ---
-
-## � Support & Community
-
-<div align="center">
-
-### Show Your Support
-
-If you find this project useful, please consider:
-
-⭐ **Star this repository**  
-🐛 **Report bugs**  
-💡 **Suggest new features**  
-🤝 **Contribute code**
 
 ### Get Help
 
@@ -512,14 +497,6 @@ If you find this project useful, please consider:
 - 🐛 [Issue Tracker](https://github.com/amitlyzr/exit-interview-os/issues)
 - 📧 [Email Support](mailto:support@lyzr.ai)
 
----
-
-<p>Built with ❤️ by <a href="https://lyzr.ai">Lyzr</a></p>
-
-<p>
-  <a href="https://twitter.com/lyzrai">Twitter</a> •
-  <a href="https://github.com/amitlyzr">GitHub</a> •
-  <a href="https://lyzr.ai">Website</a>
-</p>
+<p align="center">Built with ❤️ by <a href="https://lyzr.ai">Lyzr AI</a></p>
 
 </div>
