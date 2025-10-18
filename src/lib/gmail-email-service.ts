@@ -1,30 +1,83 @@
-/* eslint-disable import/no-anonymous-default-export */
+/**
+ * Gmail Email Service
+ * 
+ * Manages email sending via Gmail API with OAuth 2.0 authentication.
+ * Handles token refresh, email formatting, and connection management.
+ * 
+ * @module lib/gmail-email-service
+ */
+
 import connectDB from "@/lib/mongodb/mongdb";
 import User from "@/lib/mongodb/schemas/User";
 import GmailAuthService from "@/lib/gmail-auth";
 
+/**
+ * Email sending options
+ */
 interface EmailOptions {
+  /** Recipient email address */
   to: string;
+  /** Email subject line */
   subject: string;
+  /** Plain text version of email body (optional) */
   text?: string;
+  /** HTML version of email body (optional) */
   html?: string;
 }
 
+/**
+ * Email sending result
+ */
 interface SendResult {
+  /** Whether email was sent successfully */
   success: boolean;
+  /** Gmail message ID if successful (optional) */
   messageId?: string;
+  /** Error message if failed (optional) */
   error?: string;
 }
 
+/**
+ * Gmail Email Service Class
+ * 
+ * Provides methods for sending emails via user's connected Gmail account.
+ * Automatically handles token refresh and email formatting.
+ */
 export class GmailEmailService {
   /**
-   * Send email using user's connected Gmail account
+   * Sends an email using the user's connected Gmail account
+   * 
+   * Handles the complete email sending flow:
+   * 1. Fetches user's Gmail OAuth credentials from database
+   * 2. Checks token expiration and refreshes if needed
+   * 3. Creates properly formatted RFC 2822 email message
+   * 4. Sends email via Gmail API
+   * 
+   * @param userId - User ID who owns the Gmail connection
+   * @param emailOptions - Email content and recipient information
+   * @returns Promise resolving to send result with success status
+   * 
+   * @example
+   * ```typescript
+   * const result = await gmailService.sendEmailAsUser('user_123', {
+   *   to: 'employee@company.com',
+   *   subject: 'Exit Interview Invitation',
+   *   html: '<p>Please complete your exit interview...</p>',
+   *   text: 'Please complete your exit interview...'
+   * });
+   * 
+   * if (result.success) {
+   *   console.log(`Email sent! Message ID: ${result.messageId}`);
+   * } else {
+   *   console.error(`Failed to send: ${result.error}`);
+   * }
+   * ```
    */
   async sendEmailAsUser(userId: string, emailOptions: EmailOptions): Promise<SendResult> {
     try {
       await connectDB();
 
-      // Get user's Gmail credentials
+      // Retrieve user's stored Gmail OAuth credentials
       const credentials = await this.getUserGmailCredentials(userId);
       
       if (!credentials) {
@@ -34,7 +87,7 @@ export class GmailEmailService {
         };
       }
 
-      // Check if token needs refresh
+      // Check token expiration and refresh if necessary
       let accessToken = credentials.access_token;
       if (GmailAuthService.isTokenExpired(credentials.expires_at)) {
         try {
@@ -44,7 +97,7 @@ export class GmailEmailService {
             throw new Error('Failed to get new access token');
           }
 
-          // Update stored credentials
+          // Update database with new access token and expiration
           await this.updateUserGmailCredentials(userId, {
             access_token: newTokens.access_token,
             expires_at: new Date(newTokens.expiry_date || Date.now() + 3600 * 1000)
@@ -60,10 +113,10 @@ export class GmailEmailService {
         }
       }
 
-      // Create Gmail client and send email
+      // Initialize Gmail API client with current access token
       const gmail = GmailAuthService.createGmailClient(accessToken);
       
-      // Create email message
+      // Create properly formatted email message
       const message = this.createEmailMessage({
         from: credentials.email,
         to: emailOptions.to,
@@ -72,7 +125,7 @@ export class GmailEmailService {
         html: emailOptions.html
       });
 
-      // Send email
+      // Send email via Gmail API
       const result = await gmail.users.messages.send({
         userId: 'me',
         requestBody: {
@@ -95,7 +148,18 @@ export class GmailEmailService {
   }
 
   /**
-   * Check if user has Gmail connected
+   * Checks if user has Gmail account connected
+   * 
+   * @param userId - User ID to check
+   * @returns Promise resolving to true if Gmail is connected, false otherwise
+   * 
+   * @example
+   * ```typescript
+   * const isConnected = await gmailService.checkUserGmailConnection('user_123');
+   * if (!isConnected) {
+   *   console.log('Please connect your Gmail account first');
+   * }
+   * ```
    */
   async checkUserGmailConnection(userId: string): Promise<boolean> {
     try {
@@ -109,7 +173,13 @@ export class GmailEmailService {
   }
 
   /**
-   * Get user's Gmail credentials from database
+   * Retrieves user's Gmail OAuth credentials from database
+   * 
+   * Private method used internally to fetch stored credentials.
+   * 
+   * @param userId - User ID to fetch credentials for
+   * @returns User's Gmail credentials or null if not connected
+   * @private
    */
   private async getUserGmailCredentials(userId: string) {
     const user = await User.findOne({ user_id: userId });
@@ -127,7 +197,13 @@ export class GmailEmailService {
   }
 
   /**
-   * Update user's Gmail credentials in database
+   * Updates user's Gmail OAuth credentials in database
+   * 
+   * Private method used internally after token refresh.
+   * 
+   * @param userId - User ID to update credentials for
+   * @param updates - New access token and/or expiration date
+   * @private
    */
   private async updateUserGmailCredentials(userId: string, updates: {
     access_token?: string;
@@ -146,7 +222,18 @@ export class GmailEmailService {
   }
 
   /**
-   * Create RFC 2822 formatted email message with proper HTML preservation
+   * Creates RFC 2822 formatted email message for Gmail API
+   * 
+   * Formats email message according to RFC 2822 standard with proper:
+   * - MIME multipart handling for HTML + text versions
+   * - Character encoding (UTF-8)
+   * - Base64url encoding for Gmail API
+   * 
+   * Priority: HTML > Text > Empty
+   * 
+   * @param options - Email components (from, to, subject, text, html)
+   * @returns Base64url-encoded email message ready for Gmail API
+   * @private
    */
   private createEmailMessage(options: {
     from: string;
@@ -157,6 +244,7 @@ export class GmailEmailService {
   }): string {
     const boundary = `boundary_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     
+    // Build email headers
     const message = [
       `From: ${options.from}`,
       `To: ${options.to}`,
@@ -164,7 +252,7 @@ export class GmailEmailService {
       `MIME-Version: 1.0`
     ];
 
-    // HTML Priority Logic: HTML > Text > Empty
+    // Add content based on what's provided (HTML has priority)
     if (options.html) {
       if (options.text) {
         // Multipart email with both HTML and text versions
@@ -195,6 +283,7 @@ export class GmailEmailService {
         );
       }
     } else if (options.text) {
+      // Plain text only email
       message.push(
         `Content-Type: text/plain; charset=utf-8`,
         `Content-Transfer-Encoding: 8bit`,
@@ -202,6 +291,7 @@ export class GmailEmailService {
         options.text
       );
     } else {
+      // Empty email body
       message.push(
         `Content-Type: text/plain; charset=utf-8`,
         `Content-Transfer-Encoding: 8bit`,
@@ -212,7 +302,7 @@ export class GmailEmailService {
 
     const rawMessage = message.join('\r\n');
     
-    // Encode to base64url for Gmail API
+    // Encode to base64url format required by Gmail API
     return Buffer.from(rawMessage, 'utf8')
       .toString('base64')
       .replace(/\+/g, '-')
@@ -221,7 +311,21 @@ export class GmailEmailService {
   }
 
   /**
-   * Test Gmail connection by sending a test email to the connected account
+   * Tests Gmail connection by sending a test email
+   * 
+   * Sends a test email to verify the Gmail connection is working.
+   * Uses a hardcoded recipient for testing purposes.
+   * 
+   * @param userId - User ID whose Gmail connection to test
+   * @returns Promise resolving to send result
+   * 
+   * @example
+   * ```typescript
+   * const result = await gmailService.testGmailConnection('user_123');
+   * if (result.success) {
+   *   console.log('Gmail connection is working!');
+   * }
+   * ```
    */
   async testGmailConnection(userId: string): Promise<SendResult> {
     try {
@@ -235,7 +339,7 @@ export class GmailEmailService {
       }
 
       return await this.sendEmailAsUser(userId, {
-        to: "nhce.amit@gmail.com",
+        to: credentials.email, // Send test email to connected account
         subject: 'Gmail Connection Test - Exit Interview App',
         html: `
           <h2>Gmail Connection Successful!</h2>
@@ -256,4 +360,14 @@ export class GmailEmailService {
   }
 }
 
-export default new GmailEmailService();
+/**
+ * Default export: Singleton instance of GmailEmailService
+ * 
+ * Import this instance to use the service:
+ * ```typescript
+ * import gmailService from '@/lib/gmail-email-service';
+ * await gmailService.sendEmailAsUser(...);
+ * ```
+ */
+const gmailService = new GmailEmailService();
+export default gmailService;

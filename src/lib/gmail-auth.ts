@@ -1,7 +1,15 @@
+/**
+ * Gmail OAuth Authentication Service
+ * Handles OAuth2 flow for Gmail API access (sending exit interview invitations)
+ */
+
 /* eslint-disable import/no-anonymous-default-export */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { google } from 'googleapis';
 
+/**
+ * Gmail authentication and authorization service
+ */
 export class GmailAuthService {
   private oauth2Client: any;
 
@@ -14,7 +22,9 @@ export class GmailAuthService {
   }
 
   /**
-   * Generate OAuth URL for user to connect their Gmail
+   * Generate OAuth URL for Gmail authorization
+   * @param userId - User ID to associate with the OAuth session
+   * @returns Authorization URL for user to visit
    */
   getAuthUrl(userId: string): string {
     const scopes = [
@@ -32,7 +42,9 @@ export class GmailAuthService {
   }
 
   /**
-   * Exchange authorization code for tokens
+   * Exchange authorization code for access and refresh tokens
+   * @param code - Authorization code from OAuth callback
+   * @returns Token credentials
    */
   async getTokens(code: string) {
     try {
@@ -45,7 +57,9 @@ export class GmailAuthService {
   }
 
   /**
-   * Refresh access token using refresh token
+   * Refresh expired access token
+   * @param refreshToken - Refresh token from initial authorization
+   * @returns New access token credentials
    */
   async refreshAccessToken(refreshToken: string) {
     try {
@@ -62,7 +76,9 @@ export class GmailAuthService {
   }
 
   /**
-   * Get user email from Google using access token
+   * Get user's email address from Google
+   * @param accessToken - Valid OAuth access token
+   * @returns User's email address
    */
   async getUserEmail(accessToken: string): Promise<string> {
     try {
@@ -80,7 +96,9 @@ export class GmailAuthService {
   }
 
   /**
-   * Create Gmail client with access token
+   * Create Gmail API client instance
+   * @param accessToken - Valid OAuth access token
+   * @returns Configured Gmail API client
    */
   createGmailClient(accessToken: string) {
     const oauth2Client = new google.auth.OAuth2();
@@ -90,14 +108,17 @@ export class GmailAuthService {
   }
 
   /**
-   * Check if tokens are expired
+   * Check if access token has expired
+   * @param expiresAt - Token expiration date
+   * @returns True if token is expired
    */
   isTokenExpired(expiresAt: Date): boolean {
     return new Date() >= new Date(expiresAt);
   }
 
   /**
-   * Validate OAuth configuration
+   * Validate OAuth environment configuration
+   * @returns True if all required env vars are present
    */
   validateConfig(): boolean {
     return !!(

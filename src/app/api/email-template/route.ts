@@ -1,3 +1,22 @@
+/**
+ * Email Template API - Manage customizable email invitation templates
+ * 
+ * @access HR users only
+ * 
+ * GET /api/email-template?user_id=user_123 - Get user's template or default
+ * curl "http://localhost:3000/api/email-template?user_id=user_123"
+ * 
+ * POST /api/email-template - Save custom template
+ * curl -X POST http://localhost:3000/api/email-template \
+ *   -H "Content-Type: application/json" \
+ *   -d '{"user_id":"user_123","subject":"Custom Subject","htmlContent":"<html>...</html>","textContent":"Plain text..."}'
+ * 
+ * DELETE /api/email-template?user_id=user_123 - Reset to default
+ * curl -X DELETE "http://localhost:3000/api/email-template?user_id=user_123"
+ * 
+ * Template variables: {{name}}, {{role}}, {{level}}, {{tenure}}, {{interviewUrl}}
+ */
+
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb/mongdb";
 import { EmailTemplate } from "@/lib/mongodb/schemas";

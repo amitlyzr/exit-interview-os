@@ -4,15 +4,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { BarChart3 } from "lucide-react"
 
 interface SentimentStats {
-  positive?: number
-  negative?: number
-  neutral?: number
+    positive?: number
+    negative?: number
+    neutral?: number
 }
 
 interface SentimentChartProps {
-  sentimentStats?: SentimentStats
-  totalResponses?: number
-  isLoading?: boolean
+    sentimentStats?: SentimentStats
+    totalResponses?: number
+    isLoading?: boolean
 }
 
 export function SentimentChart({ sentimentStats, totalResponses = 0, isLoading }: SentimentChartProps) {
@@ -22,23 +22,23 @@ export function SentimentChart({ sentimentStats, totalResponses = 0, isLoading }
     const total = positive + negative + neutral
 
     const sentimentData = [
-        { 
-            name: "Positive", 
-            value: total > 0 ? Math.round((positive / total) * 100) : 0, 
+        {
+            name: "Positive",
+            value: total > 0 ? Math.round((positive / total) * 100) : 0,
             count: positive,
-            color: "bg-green-500" 
+            color: "bg-green-500"
         },
-        { 
-            name: "Neutral", 
-            value: total > 0 ? Math.round((neutral / total) * 100) : 0, 
+        {
+            name: "Neutral",
+            value: total > 0 ? Math.round((neutral / total) * 100) : 0,
             count: neutral,
-            color: "bg-gray-500" 
+            color: "bg-gray-500"
         },
-        { 
-            name: "Negative", 
-            value: total > 0 ? Math.round((negative / total) * 100) : 0, 
+        {
+            name: "Negative",
+            value: total > 0 ? Math.round((negative / total) * 100) : 0,
             count: negative,
-            color: "bg-red-500" 
+            color: "bg-red-500"
         },
     ]
 
@@ -101,7 +101,7 @@ export function SentimentChart({ sentimentStats, totalResponses = 0, isLoading }
                         </div>
                     ))}
                 </div>
-                
+
                 {/* Summary */}
                 <div className="mt-6 text-center">
                     <div className="text-2xl font-bold">{totalResponses}</div>

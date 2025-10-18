@@ -1,3 +1,14 @@
+/**
+ * Analytics API - Comprehensive exit interview analytics and insights
+ * 
+ * @access HR users only
+ * 
+ * GET /api/analytics - Retrieve aggregated analytics (supports ?user_id, ?timeFilter, ?roleFilter)
+ * curl "http://localhost:3000/api/analytics?user_id=user_456&timeFilter=30days&roleFilter=all"
+ * 
+ * Returns sentiment stats, theme analysis, trends, and feedback summaries
+ */
+
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb/mongdb";
 import Sentiment from "@/lib/mongodb/schemas/Sentiment";

@@ -1,8 +1,24 @@
+/**
+ * Sentiment API - AI-powered sentiment analysis for interview responses
+ * 
+ * @access HR users only
+ * 
+ * GET /api/sentiment - Retrieve sentiment data (supports ?session_id, ?user_id, ?sentiment, ?min_confidence, ?themes filters)
+ * curl "http://localhost:3000/api/sentiment?session_id=session_123&sentiment=negative&min_confidence=0.7"
+ * 
+ * POST /api/sentiment - Create sentiment analysis record
+ * curl -X POST http://localhost:3000/api/sentiment \
+ *   -H "Content-Type: application/json" \
+ *   -d '{"session_id":"session_123","question_number":"Q3","question":"What did you enjoy?","response":"Great team","sentiment":"positive","confidence":0.92,"themes":["company-culture"]}'
+ * 
+ * DELETE /api/sentiment - Delete sentiment record (requires ?session_id, ?question_number)
+ * curl -X DELETE "http://localhost:3000/api/sentiment?session_id=session_123&question_number=Q3"
+ */
+
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb/mongdb";
 import { Sentiment } from "@/lib/mongodb/schemas";
 
-// GET - Fetch sentiments by session_id or all sentiments with filtering
 export async function GET(request: NextRequest) {
   try {
     await connectDB();
@@ -16,7 +32,7 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(url.searchParams.get("limit") || "50");
     const skip = parseInt(url.searchParams.get("skip") || "0");
 
-    // Build query
+    // Build dynamic query based on provided filters
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const query: any = {};
 
@@ -32,23 +48,25 @@ export async function GET(request: NextRequest) {
       query.sentiment = sentiment;
     }
 
+    // Filter by minimum confidence threshold
     if (minConfidence) {
       query.confidence = { $gte: parseFloat(minConfidence) };
     }
 
+    // Filter by themes (supports multiple themes)
     if (themes) {
       const themeArray = themes.split(",").map((t) => t.trim());
       query.themes = { $in: themeArray };
     }
 
-    // Fetch sentiments with pagination
+    // Fetch sentiments with pagination, sorted by newest first
     const sentiments = await Sentiment.find(query)
       .sort({ created_at: -1 })
       .limit(limit)
       .skip(skip)
       .lean();
 
-    // Get total count for pagination
+    // Get total count for pagination metadata
     const total = await Sentiment.countDocuments(query);
 
     return NextResponse.json({
@@ -64,7 +82,6 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("Error fetching sentiments:", error);
     return NextResponse.json(
       {
         success: false,
@@ -76,7 +93,6 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST - Create or update sentiment analysis
 export async function POST(request: NextRequest) {
   try {
     await connectDB();
@@ -110,7 +126,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate sentiment value
+    // Validate sentiment is one of allowed values
     if (!["positive", "negative", "neutral"].includes(sentiment)) {
       return NextResponse.json(
         {
@@ -121,7 +137,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate confidence range
+    // Validate confidence is in valid range (0-1)
     if (confidence < 0 || confidence > 1) {
       return NextResponse.json(
         {
@@ -132,7 +148,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get session to link user_id
+    // Verify session exists and get user_id
     const { Session } = await import("@/lib/mongodb/schemas");
     const session = await Session.findOne({ session_id });
     if (!session) {
@@ -145,7 +161,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create or update sentiment
+    // Create or update sentiment record
     const sentimentData = {
       session_id,
       user_id: session.user_id, // Link to session's user
@@ -185,7 +201,6 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// DELETE - Delete sentiment by session_id and question_number
 export async function DELETE(request: NextRequest) {
   try {
     await connectDB();

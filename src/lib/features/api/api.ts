@@ -1,7 +1,11 @@
+/**
+ * RTK Query API - Exit interview sessions, messages, sentiment, and analytics
+ */
+
 "use client";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-// Types for our API
+/** Create session request */
 export interface CreateSessionRequest {
   session_id: string;
   user_id: string;
@@ -12,6 +16,7 @@ export interface CreateSessionRequest {
   tenure: number;
 }
 
+/** Create session response */
 export interface CreateSessionResponse {
   message: string;
   session: {
@@ -27,6 +32,7 @@ export interface CreateSessionResponse {
   };
 }
 
+/** Update session request */
 export interface UpdateSessionRequest {
   status?: string;
   started_at?: string;
@@ -34,6 +40,7 @@ export interface UpdateSessionRequest {
   duration_minutes?: number;
 }
 
+/** Session response */
 export interface SessionResponse {
   session: {
     session_id: string;
@@ -53,6 +60,7 @@ export interface SessionResponse {
   };
 }
 
+/** Update session response */
 export interface UpdateSessionResponse {
   message: string;
   session: {
@@ -73,12 +81,14 @@ export interface UpdateSessionResponse {
   };
 }
 
+/** Create message request */
 export interface CreateMessageRequest {
   role: string;
   content: string;
   session_id: string;
 }
 
+/** Create message response */
 export interface CreateMessageResponse {
   message: string;
   data: {
@@ -90,6 +100,7 @@ export interface CreateMessageResponse {
   };
 }
 
+/** Get messages response */
 export interface GetMessagesResponse {
   messages: Array<{
     _id: string;
@@ -106,11 +117,13 @@ export interface GetMessagesResponse {
   };
 }
 
+/** Generate feedback request */
 export interface GenerateFeedbackRequest {
   session_id: string;
   user_id: string;
 }
 
+/** Structured feedback data */
 export interface StructuredFeedback {
   expectations_vs_reality: string;
   challenges_faced: string;
@@ -129,6 +142,7 @@ export interface StructuredFeedback {
   additional_insights: string;
 }
 
+/** Generate feedback response */
 export interface GenerateFeedbackResponse {
   success: boolean;
   feedback: StructuredFeedback;
@@ -143,6 +157,7 @@ export interface GenerateFeedbackResponse {
   };
 }
 
+/** Sentiment data */
 export interface SentimentData {
   session_id: string;
   question_number: string;
@@ -155,6 +170,7 @@ export interface SentimentData {
   updated_at: string;
 }
 
+/** Create sentiment request */
 export interface CreateSentimentRequest {
   session_id: string;
   question_number: string;
@@ -165,12 +181,14 @@ export interface CreateSentimentRequest {
   themes?: string[];
 }
 
+/** Create sentiment response */
 export interface CreateSentimentResponse {
   success: boolean;
   message: string;
   data: SentimentData;
 }
 
+/** Get sentiments response */
 export interface GetSentimentsResponse {
   success: boolean;
   data: {
@@ -184,11 +202,13 @@ export interface GetSentimentsResponse {
   };
 }
 
+/** Send invitation request */
 export interface SendInvitationRequest {
   session_id: string;
   user_id: string;
 }
 
+/** Send invitation response */
 export interface SendInvitationResponse {
   message: string;
   session_id: string;
@@ -196,6 +216,7 @@ export interface SendInvitationResponse {
   interview_url: string;
 }
 
+/** Analytics response */
 export interface AnalyticsResponse {
   success: boolean;
   data: {
@@ -250,6 +271,10 @@ export interface AnalyticsResponse {
   };
 }
 
+/**
+ * RTK Query API instance
+ * Provides hooks for all API operations with automatic caching and state management
+ */
 const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
@@ -258,7 +283,7 @@ const api = createApi({
   }),
   tagTypes: ["Session", "Message"],
   endpoints: (builder) => ({
-    // Session endpoints
+    /** Create a new exit interview session */
     createSession: builder.mutation<
       CreateSessionResponse,
       CreateSessionRequest
@@ -271,11 +296,13 @@ const api = createApi({
       invalidatesTags: ["Session"],
     }),
 
+    /** Get session by ID */
     getSession: builder.query<SessionResponse, string>({
       query: (sessionId) => `/sessions/${sessionId}`,
       providesTags: ["Session"],
     }),
 
+    /** Get multiple sessions with filters */
     getSessions: builder.query<
       { sessions: SessionResponse["session"][] },
       { status?: string; limit?: number }
@@ -289,6 +316,7 @@ const api = createApi({
       providesTags: ["Session"],
     }),
 
+    /** Update session details */
     updateSession: builder.mutation<
       UpdateSessionResponse,
       { sessionId: string; updates: UpdateSessionRequest }
@@ -301,6 +329,7 @@ const api = createApi({
       invalidatesTags: ["Session"],
     }),
 
+    /** Delete a session */
     deleteSession: builder.mutation<{ message: string }, string>({
       query: (sessionId) => ({
         url: `/sessions/${sessionId}`,
@@ -309,7 +338,7 @@ const api = createApi({
       invalidatesTags: ["Session"],
     }),
 
-    // Message endpoints
+    /** Create a new message in conversation */
     createMessage: builder.mutation<
       CreateMessageResponse,
       CreateMessageRequest
@@ -322,6 +351,7 @@ const api = createApi({
       invalidatesTags: ["Message"],
     }),
 
+    /** Get messages for a session */
     getMessages: builder.query<
       GetMessagesResponse,
       { sessionId: string; limit?: number; skip?: number }
@@ -331,7 +361,7 @@ const api = createApi({
       providesTags: ["Message"],
     }),
 
-    // Feedback endpoint
+    /** Generate AI feedback for session */
     generateFeedback: builder.mutation<
       GenerateFeedbackResponse,
       GenerateFeedbackRequest
@@ -343,7 +373,7 @@ const api = createApi({
       }),
     }),
 
-    // Sentiment endpoints
+    /** Create sentiment analysis record */
     createSentiment: builder.mutation<
       CreateSentimentResponse,
       CreateSentimentRequest
@@ -356,6 +386,7 @@ const api = createApi({
       invalidatesTags: ["Session"],
     }),
 
+    /** Get sentiment data with filters */
     getSentiments: builder.query<
       GetSentimentsResponse,
       {
@@ -378,7 +409,7 @@ const api = createApi({
       },
     }),
 
-    // Analytics endpoint
+    /** Get analytics data */
     getAnalytics: builder.query<
       AnalyticsResponse,
       { timeFilter?: string; roleFilter?: string }
@@ -391,7 +422,7 @@ const api = createApi({
       },
     }),
 
-    // Send invitation endpoint
+    /** Send email invitation to employee */
     sendInvitation: builder.mutation<
       SendInvitationResponse,
       SendInvitationRequest

@@ -1,8 +1,25 @@
+/**
+ * SMTP Config API - Manage SMTP email server configuration
+ * 
+ * @access HR users only
+ * 
+ * GET /api/smtp-config?user_id=user_123 - Retrieve SMTP configuration
+ * curl "http://localhost:3000/api/smtp-config?user_id=user_123"
+ * 
+ * POST /api/smtp-config - Save SMTP configuration
+ * curl -X POST http://localhost:3000/api/smtp-config \
+ *   -H "Content-Type: application/json" \
+ *   -d '{"user_id":"user_123","host":"smtp.gmail.com","port":587,"user":"email@gmail.com","password":"app-password","from":"noreply@company.com"}'
+ * 
+ * DELETE /api/smtp-config?user_id=user_123 - Remove SMTP configuration
+ * curl -X DELETE "http://localhost:3000/api/smtp-config?user_id=user_123"
+ */
+
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb/mongdb";
 import User from "@/lib/mongodb/schemas/User";
 
-// GET SMTP configuration for a user
+// Retrieve SMTP configuration
 export async function GET(request: NextRequest) {
     try {
         await connectDB();
@@ -49,7 +66,7 @@ export async function GET(request: NextRequest) {
     }
 }
 
-// POST/PUT SMTP configuration for a user
+// Save or update SMTP configuration
 export async function POST(request: NextRequest) {
     try {
         await connectDB();
@@ -103,7 +120,7 @@ export async function POST(request: NextRequest) {
     }
 }
 
-// DELETE SMTP configuration for a user
+// Remove SMTP configuration
 export async function DELETE(request: NextRequest) {
     try {
         await connectDB();

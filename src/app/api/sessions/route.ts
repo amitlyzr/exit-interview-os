@@ -1,8 +1,20 @@
+/**
+ * Sessions API - Create and retrieve exit interview sessions
+ * 
+ * @access HR users only
+ * 
+ * POST /api/sessions - Create new session
+ * curl -X POST http://localhost:3000/api/sessions \
+ *   -H "Content-Type: application/json" \
+ *   -d '{"session_id":"session_123","user_id":"user_456","name":"John Doe","email":"john@example.com","role":"Developer","interview_level":"senior","tenure":24}'
+ * 
+ * GET /api/sessions - List sessions (supports ?user_id, ?status, ?limit filters)
+ * curl http://localhost:3000/api/sessions?user_id=user_456&status=completed
+ */
+
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb/mongdb";
 import Session from "@/lib/mongodb/schemas/Session";
-
-// POST - Create a new session
 export async function POST(request: NextRequest) {
   try {
     await connectDB();
@@ -30,7 +42,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create new session
+    // Create new session with pending status
     const session = new Session({
       session_id,
       user_id,
@@ -64,15 +76,16 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("Error creating session:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { 
+        error: "Internal server error",
+        message: error instanceof Error ? error.message : "Unknown error"
+      },
       { status: 500 }
     );
   }
 }
 
-// GET - Retrieve sessions (optional - for listing sessions)
 export async function GET(request: NextRequest) {
   try {
     await connectDB();
@@ -83,6 +96,7 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get("status");
     const limit = parseInt(searchParams.get("limit") || "50");
 
+    // Build query object dynamically
     const query: Record<string, string> = {};
 
     if (session_id) {
@@ -97,6 +111,7 @@ export async function GET(request: NextRequest) {
       query.status = status;
     }
 
+    // Retrieve sessions sorted by creation date (newest first)
     const sessions = await Session.find(query)
       .sort({ created_at: -1 })
       .limit(limit);
@@ -106,9 +121,11 @@ export async function GET(request: NextRequest) {
       sessions 
     });
   } catch (error) {
-    console.error("Error fetching sessions:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { 
+        error: "Internal server error",
+        message: error instanceof Error ? error.message : "Unknown error"
+      },
       { status: 500 }
     );
   }

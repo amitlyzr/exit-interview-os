@@ -1,35 +1,86 @@
+/**
+ * User Schema
+ * 
+ * Represents system users with authentication, organization, and email configuration.
+ * Supports both Gmail OAuth and SMTP email delivery methods.
+ * 
+ * @module mongodb/schemas/User
+ */
+
 import mongoose, { Schema, Document } from "mongoose";
 
+/**
+ * SMTP Configuration Interface
+ * Configuration for SMTP-based email delivery
+ */
+export interface ISMTPConfig {
+  /** SMTP server hostname (e.g., smtp.gmail.com) */
+  host: string;
+  /** SMTP server port (typically 587 for TLS, 465 for SSL) */
+  port: number;
+  /** Whether to use TLS/SSL encryption */
+  secure?: boolean;
+  /** SMTP authentication username */
+  user: string;
+  /** SMTP authentication password or app-specific password */
+  pass: string;
+  /** Default 'from' email address for sent emails */
+  from: string;
+}
+
+/**
+ * Gmail OAuth Configuration Interface
+ * OAuth 2.0 credentials for Gmail API access
+ */
+export interface IGmailOAuth {
+  /** OAuth access token for API requests */
+  access_token: string;
+  /** OAuth refresh token for obtaining new access tokens */
+  refresh_token: string;
+  /** Expiration timestamp for the access token */
+  expires_at: Date;
+  /** Authenticated Gmail email address */
+  email: string;
+  /** Timestamp when Gmail was connected */
+  connected_at: Date;
+}
+
+/**
+ * User Document Interface
+ * 
+ * Represents a user in the exit interview system.
+ * Users can be HR (first user in org) or employees.
+ */
 export interface IUser extends Document {
-  user_id: string; // From Lyzr auth system
+  /** Unique user identifier from Lyzr authentication system */
+  user_id: string;
+  /** User's email address (optional) */
   email?: string;
-  token: string; // API key from Lyzr
-  org_id?: string; // Organization ID from Lyzr
-  is_hr: boolean; // First user from org becomes HR
-  smtp_config?: {
-    host: string;
-    port: number;
-    secure?: boolean;
-    user: string;
-    pass: string;
-    from: string;
-  };
-  gmail_oauth?: {
-    access_token: string;
-    refresh_token: string;
-    expires_at: Date;
-    email: string;
-    connected_at: Date;
-  };
+  /** API key/token from Lyzr for authentication */
+  token: string;
+  /** Organization identifier from Lyzr (for multi-tenant support) */
+  org_id?: string;
+  /** Whether user has HR/admin privileges (first user in org becomes HR) */
+  is_hr: boolean;
+  /** SMTP email configuration (fallback email delivery method) */
+  smtp_config?: ISMTPConfig;
+  /** Gmail OAuth credentials (primary email delivery method) */
+  gmail_oauth?: IGmailOAuth;
+  /** Timestamp when user record was created */
   created_at: Date;
+  /** Timestamp when user record was last updated */
   updated_at: Date;
 }
 
+/**
+ * Mongoose schema definition for User model
+ */
 const UserSchema: Schema = new Schema({
   user_id: {
     type: String,
     required: true,
     unique: true,
+    index: true,
   },
   email: {
     type: String,
@@ -44,22 +95,12 @@ const UserSchema: Schema = new Schema({
   org_id: {
     type: String,
     required: false,
+    index: true,
   },
   is_hr: {
     type: Boolean,
     default: false,
-  },
-  agent_id: {
-    type: String,
-    required: false,
-  },
-  agent_name: {
-    type: String,
-    required: false,
-  },
-  agent_description: {
-    type: String,
-    required: false,
+    index: true,
   },
   smtp_config: {
     host: { type: String, required: false },
@@ -86,18 +127,29 @@ const UserSchema: Schema = new Schema({
   },
 });
 
-// Update the updated_at field before saving
+/**
+ * Pre-save hook to automatically update the updated_at timestamp
+ */
 UserSchema.pre<IUser>("save", function (next) {
   this.updated_at = new Date();
   next();
 });
 
-// Create indexes for better query performance
-UserSchema.index({ user_id: 1 }, { unique: true });
-UserSchema.index({ email: 1 });
-UserSchema.index({ token: 1 });
+/**
+ * Compound index for efficient HR user queries within organizations
+ */
 UserSchema.index({ org_id: 1, is_hr: 1 });
+
+/**
+ * Index for sorting users by creation date
+ */
 UserSchema.index({ created_at: -1 });
 
+/**
+ * User Model
+ * 
+ * Mongoose model for user operations.
+ * Automatically reuses existing model in development to prevent re-compilation issues.
+ */
 export default mongoose.models.User ||
   mongoose.model<IUser>("User", UserSchema);

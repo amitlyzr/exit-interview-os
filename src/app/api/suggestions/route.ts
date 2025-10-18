@@ -1,3 +1,17 @@
+/**
+ * Suggestions API - AI-generated improvement recommendations based on exit interviews
+ * 
+ * @access HR users only
+ * 
+ * POST /api/suggestions - Generate actionable improvement suggestions
+ * curl -X POST http://localhost:3000/api/suggestions \
+ *   -H "Content-Type: application/json" \
+ *   -d '{"user_id":"user_456","count":5}'
+ * 
+ * GET /api/suggestions?user_id=user_456&count=5 - Get recent feedback summaries
+ * curl "http://localhost:3000/api/suggestions?user_id=user_456&count=5"
+ */
+
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb/mongdb";
 import { Session, Sentiment, User } from "@/lib/mongodb/schemas";

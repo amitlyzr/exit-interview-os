@@ -1,3 +1,16 @@
+/**
+ * Send Invitation API - Send exit interview invitations via email
+ * 
+ * @access HR users only
+ * 
+ * POST /api/send-invitation - Send email invitation to employee
+ * curl -X POST http://localhost:3000/api/send-invitation \
+ *   -H "Content-Type: application/json" \
+ *   -d '{"session_id":"session_123","user_id":"user_456"}'
+ * 
+ * Attempts: 1) Gmail OAuth, 2) SMTP fallback, 3) Manual link generation
+ */
+
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb/mongdb";
 import { Session, EmailTemplate } from "@/lib/mongodb/schemas";

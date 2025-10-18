@@ -1,3 +1,16 @@
+/**
+ * Feedback API - Generate AI-powered feedback and sentiment analysis from interview sessions
+ * 
+ * @access Internal (called after interview completion)
+ * 
+ * POST /api/feedback - Generate comprehensive feedback for completed session
+ * curl -X POST http://localhost:3000/api/feedback \
+ *   -H "Content-Type: application/json" \
+ *   -d '{"session_id":"session_123","user_id":"user_456"}'
+ * 
+ * Uses Lyzr AI agents to analyze conversation and extract insights
+ */
+
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb/mongdb";
 import { Message, Session, Sentiment } from "@/lib/mongodb/schemas";

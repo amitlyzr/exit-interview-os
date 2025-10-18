@@ -1,25 +1,42 @@
+/**
+ * Users API - User management and HR access control
+ * 
+ * @access Public (authentication via Lyzr token)
+ * @note First user in organization automatically becomes HR
+ * 
+ * POST /api/users - Create or retrieve user
+ * curl -X POST http://localhost:3000/api/users \
+ *   -H "Content-Type: application/json" \
+ *   -d '{"user_id":"user_123","token":"lyzr_api_key","org_id":"org_456","email":"user@example.com"}'
+ * 
+ * GET /api/users?user_id=user_123 - Get user by ID
+ * curl http://localhost:3000/api/users?user_id=user_123
+ * 
+ * GET /api/users?org_id=org_456 - Get all users in organization
+ * curl http://localhost:3000/api/users?org_id=org_456
+ */
+
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb/mongdb";
 import User from "@/lib/mongodb/schemas/User";
-
-// POST /api/users - Create user if doesn't exist, handle HR permissions
 export async function POST(request: NextRequest) {
   try {
     await connectDB();
 
+    // Parse and validate request body
     let body;
     try {
       body = await request.json();
-    } catch (jsonError) {
-      console.error("Invalid JSON in request body:", jsonError);
+    } catch (error) {
       return NextResponse.json(
-        { error: "Invalid JSON format in request body" },
+        { error: `Invalid JSON format in request body: ${error}` },
         { status: 400 }
       );
     }
 
     const { user_id, org_id, email, token } = body;
 
+    // Validate required fields
     if (!user_id || !token) {
       return NextResponse.json(
         { error: "user_id and token are required" },
@@ -27,11 +44,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Step 1: Check if user already exists
+    // Check if user already exists
     const existingUser = await User.findOne({ user_id });
 
     if (existingUser) {
-      // User exists, verify org_id matches
+      // Verify organization ID matches for existing user
       if (org_id && existingUser.org_id !== org_id) {
         return NextResponse.json(
           { error: "Organization ID mismatch" },
@@ -47,25 +64,18 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Step 2: Determine if this should be the HR user for the org BEFORE creating user
-    // let isHR = false;
-    // if (org_id) {
-    //   // Count other users in the same org
-    //   const otherUsersInOrg = await User.countDocuments({ org_id });
-
-    //   // If no other users exist in this org, make this user HR
-    //   if (otherUsersInOrg === 0) {
-    //     isHR = true;
-    //   }
-    // }
-
+    // Determine HR status for new user
+    // First user in organization automatically gets HR privileges
     let isHR = false;
 
     if (org_id) {
-      const hrOrgIds = ["b385ab96-1dd1-489b-8f7e-f5d10f9edd7e"];
+      // Hardcoded HR organization IDs (can be moved to environment variables)
+      const hrOrgIds = ["specify-hr-org-ids-here"];
+      
       if (hrOrgIds.includes(org_id)) {
         isHR = true;
       } else {
+        // Check if any other users exist in this organization
         const otherUsersInOrg = await User.countDocuments({ org_id });
         if (otherUsersInOrg === 0) {
           isHR = true;
@@ -73,7 +83,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Step 3: Create new user with correct HR status
+    // Create new user with determined HR status
     const newUser = new User({
       user_id,
       email,
@@ -84,41 +94,32 @@ export async function POST(request: NextRequest) {
 
     await newUser.save();
 
-    // Create Lyzr agent for the new user
-    // const agentData = await createLyzrAgent(token, user_id);
-
-    // if (agentData) {
-    //   // Update user with agent information
-    //   newUser.agent_id = agentData.agent_id;
-    //   newUser.agent_name = agentData.agent_name;
-    //   newUser.agent_description = agentData.agent_description;
-    //   await newUser.save();
-    // }
-
     return NextResponse.json({
       success: true,
       user: newUser,
       isNewUser: true,
       isHR: newUser.is_hr
-      // agent_created: !!agentData
     });
   } catch (error) {
-    console.error("Error in POST /api/users:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { 
+        error: "Internal server error",
+        message: error instanceof Error ? error.message : "Unknown error"
+      },
       { status: 500 }
     );
   }
 }
 
-// GET /api/users - Get user by user_id (from query params)
 export async function GET(request: NextRequest) {
   try {
     await connectDB();
+    
     const { searchParams } = new URL(request.url);
     const user_id = searchParams.get('user_id');
     const org_id = searchParams.get('org_id');
 
+    // At least one parameter is required
     if (!user_id && !org_id) {
       return NextResponse.json(
         { error: "user_id or org_id is required" },
@@ -126,31 +127,38 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Retrieve single user by user_id
     if (user_id) {
       const user = await User.findOne({ user_id });
+      
       if (!user) {
         return NextResponse.json(
           { error: "User not found" },
           { status: 404 }
         );
       }
+      
       return NextResponse.json({
         success: true,
         user
       });
     }
 
+    // Retrieve all users in organization
     if (org_id) {
       const users = await User.find({ org_id });
+      
       return NextResponse.json({
         success: true,
         users
       });
     }
   } catch (error) {
-    console.error("Error in GET /api/users:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { 
+        error: "Internal server error",
+        message: error instanceof Error ? error.message : "Unknown error"
+      },
       { status: 500 }
     );
   }
